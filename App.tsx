@@ -1,20 +1,33 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React from "react";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import { DefaultTheme, Provider as PaperProvider } from "react-native-paper";
+import { COLOR_ACCENT, COLOR_PRIMARY } from "./AppStyles";
+import { initializeApp, getApps } from "firebase/app";
+import { EntryStackScreen } from "./screens/EntryStackScreen";
+
+const firebaseConfig = require("./keys.json");
+
+if (getApps().length == 0) {
+  initializeApp(firebaseConfig);
+}
+
+
+const theme = {
+  ...DefaultTheme,
+  roundness: 2,
+  colors: {
+    ...DefaultTheme.colors,
+    primary: COLOR_PRIMARY,
+    accent: COLOR_ACCENT,
+  },
+};
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <SafeAreaProvider>
+      <PaperProvider theme={theme}>
+        <EntryStackScreen />
+      </PaperProvider>
+    </SafeAreaProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
