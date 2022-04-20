@@ -4,6 +4,10 @@ import { DefaultTheme, Provider as PaperProvider } from "react-native-paper";
 import { COLOR_ACCENT, COLOR_PRIMARY } from "./AppStyles";
 import { initializeApp, getApps } from "firebase/app";
 import { EntryStackScreen } from "./screens/EntryStackScreen";
+import { GroupScreen } from "./screens/RootStack/GroupScreen.main";
+import {CreateAGroupScreen} from "./screens/RootStack/CreateAGroupScreen.main";
+import { RootStackScreen } from "./screens/RootStack/RootStackScreen";
+
 
 const firebaseConfig = require("./keys.json");
 

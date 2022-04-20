@@ -2,8 +2,10 @@ import { NavigationContainer } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { AuthStackScreen } from "./AuthStack/AuthStackScreen";
-import { RootStackScreen } from "./RootStack/RootStackScreen";
+import { GroupScreen } from "./RootStack/GroupScreen.main";
 import { User, getAuth, onAuthStateChanged } from "firebase/auth";
+import { RootStackScreen } from "./RootStack/RootStackScreen";
+
 
 /* Note: it is VERY important that you understand
     how this screen works!!! Read the logic on this screen
