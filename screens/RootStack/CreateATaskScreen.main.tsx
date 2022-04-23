@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import { View, Text, StyleSheet, TextInput, TouchableOpacity } from "react-native";
 import {Button} from "react-native-paper";
-import {styles} from "./GroupScreen.styles";
+import {styles} from "../AuthStack/GroupScreen.styles";
 import { getAuth, signOut } from "firebase/auth";
 import { getFirestore, collection, setDoc, query, onSnapshot, orderBy, deleteDoc, doc, updateDoc, getDoc } from "firebase/firestore";
 
@@ -55,7 +55,7 @@ export function CreateATaskScreen({navigation, route}) {
     const groupRef = doc(groupsCollection, groupCode.toString());
     const docSnap = await getDoc(groupRef)
     if (docSnap.exists()) {
-      await updateDoc(groupRef, {taskNames: [...docSnap.data().taskNames, text]});
+      await updateDoc(groupRef, {taskNames: [...docSnap.data().taskNames, text], people: []});
     }
     //create a tasksCollection inside of groupsCollection
     const tasksCollection = collection(db, "groups", groupCode.toString(), "tasks");
@@ -110,6 +110,22 @@ export function CreateATaskScreen({navigation, route}) {
           labelStyle = {{color: "white"}}
         >
           Create Task 
+        </Button>
+        <Button
+          mode="contained"
+          style={{backgroundColor: "#7569BE", width: 250, height: 60, marginTop: 40, marginLeft: 25, marginRight: 25, padding: 10, borderRadius: 15, alignContent: "center" }}
+          onPress = {() => {navigation.navigate("AssignATaskScreen", {groupName: groupName, groupCode: groupCode, name: name})}} 
+          labelStyle = {{color: "white"}}
+        >
+          Assign A Task
+        </Button>
+        <Button
+          mode="contained"
+          style={{backgroundColor: "#7569BE", width: 250, height: 60, marginTop: 40, marginLeft: 25, marginRight: 25, padding: 10, borderRadius: 15, alignContent: "center" }}
+          onPress = {() => {signOut(auth)}}
+          labelStyle = {{color: "white"}}
+        >
+          Sign Out
         </Button>
       </View>
     </>

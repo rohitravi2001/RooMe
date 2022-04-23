@@ -7,6 +7,11 @@ import { EntryStackScreen } from "./screens/EntryStackScreen";
 import { GroupScreen } from "./screens/RootStack/GroupScreen.main";
 import {CreateAGroupScreen} from "./screens/RootStack/CreateAGroupScreen.main";
 import { RootStackScreen } from "./screens/RootStack/RootStackScreen";
+import {
+  BaseButton,
+  GestureHandlerRootView
+} from 'react-native-gesture-handler';
+
 
 
 const firebaseConfig = require("./keys.json");
@@ -28,10 +33,12 @@ const theme = {
 
 export default function App() {
   return (
+    <GestureHandlerRootView style={{ flex: 1 }}>
     <SafeAreaProvider>
       <PaperProvider theme={theme}>
         <EntryStackScreen />
       </PaperProvider>
     </SafeAreaProvider>
+    </GestureHandlerRootView>
   );
 }
