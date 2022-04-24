@@ -146,8 +146,6 @@ export default function HomePage() {
           justifyContent: "space-evenly",
           backgroundColor: "#fff",
           padding: 10,
-          marginBottom: 5,
-          marginTop: 5,
           marginHorizontal: 3
         },
         header: {
@@ -168,7 +166,8 @@ export default function HomePage() {
             borderColor: "#000000",
             borderWidth: 1,
             borderRadius: 20,
-            transform: [{scale: 0.9}],   
+            transform: [{scale: 0.9}], 
+            marginTop: 10  
         },
         taskBox: {
             borderColor: "#000000",
@@ -229,12 +228,12 @@ export default function HomePage() {
             <Title style={styles.titleText}>Upcoming Tasks</Title>
                 <UpcomingTasks/>
             <Title style={styles.titleText}>Roomates</Title>
-            <Paragraph style={{marginLeft: 10}}>Click circles to see roomates tasks.</Paragraph>
                 <RoomateButtons/>
             <View style={styles.container}>
                 <Button icon="plus" mode="outlined" style={styles.footerButtons} color="#000000" >Create Tasks</Button>
-                <Button icon="circle-edit-outline" mode="outlined" style={styles.footerButtons} color="#000000" >Edit Task</Button>
+                <Button icon="circle-edit-outline" mode="outlined" style={styles.footerButtons} color="#000000" >Edit Tasks</Button>
             </View>
+            <Button icon="clipboard-account-outline" mode="outlined" style={styles.footerButtons} color="#000000" >Assign Tasks</Button>
             <Button icon="calendar" mode="outlined" style={styles.footerButtons} color="#000000" >View Calendar</Button>
             
         </ScrollView>
