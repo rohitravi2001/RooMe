@@ -8,7 +8,7 @@ import { View, Text, StyleSheet, TextInput, TouchableOpacity,  Animated,
 import {Button} from "react-native-paper";
 import { CheckBox, Icon } from '@rneui/themed';
 import { getAuth, signOut } from "firebase/auth";
-import {styles} from "./GroupScreen.styles";
+import {styles} from "../AuthStack/GroupScreen.styles";
 import { getFirestore, collection, setDoc, query, onSnapshot, orderBy, deleteDoc, doc, updateDoc, getDoc, getDocs } from "firebase/firestore";
 import SortableList  from "react-native-sortable-list";
 import DropDownPicker from 'react-native-dropdown-picker';

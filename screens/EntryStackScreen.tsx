@@ -2,7 +2,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { AuthStackScreen } from "./AuthStack/AuthStackScreen";
-import { GroupScreen } from "./RootStack/GroupScreen.main";
+import { GroupScreen } from "./AuthStack/GroupScreen.main";
 import { User, getAuth, onAuthStateChanged } from "firebase/auth";
 import { RootStackScreen } from "./RootStack/RootStackScreen";
 

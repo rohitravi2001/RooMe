@@ -40,28 +40,11 @@ export default function SignUpScreen({ navigation }: Props) {
       };
     const onDismissSnackBar = () => setVisible(false);
     const createUser = () => {
-      setLoading(true);
-      const auth = getAuth();
-      createUserWithEmailAndPassword(auth, email, password)
-      .then(() => {
-        setLoading(false)
-        console.log('User account created & signed in!');
-      })
-      .catch(error => {
-        setLoading(false);
-        setVisible(true);
-        if (error.code === 'auth/email-already-in-use') {
-          console.log('That email address is already in use!');
-          setSnackBarText('That email address is already in use!');
-        }
-    
-        if (error.code === 'auth/invalid-email') {
-          console.log('That email address is invalid!');
-          setSnackBarText('That email address is invalid!');
-        }
-        console.log(error)
-     
-      });
+      console.log(email);
+      console.log(password);
+      navigation.navigate("GetName", { email: email, password: password });
+      //setLoading(true);
+
     }
     
     

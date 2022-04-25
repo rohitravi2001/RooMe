@@ -3,9 +3,11 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
 import { CreateATaskScreen } from "./CreateATaskScreen.main";
 import { AssignATaskScreen } from "./AssignATaskScreen.main";
+import { HomePage } from "./HomePage";
 
 export type RootStackParamList = {
 AssignATaskScreen: undefined;
+  HomePage: undefined
   CreateATaskScreen: undefined;
   GetName: undefined; 
   CreateAGroupScreen: undefined;
@@ -18,9 +20,12 @@ export function RootStackScreen() {
   const options = { headerShown: false };
   return (
     <NavigationContainer>
-      <RootStack.Navigator initialRouteName="CreateATaskScreen">
-
-     
+      <RootStack.Navigator initialRouteName="HomePage">
+      <RootStack.Screen
+          name="HomePage"
+          options={options}
+          component={HomePage}
+        />
          <RootStack.Screen
           name="CreateATaskScreen"
           options={options}

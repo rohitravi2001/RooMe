@@ -9,8 +9,10 @@ import { getAuth, signOut } from "firebase/auth";
 
 
 
-export function GetName({ navigation }) {
+export function GetName({ navigation, route }) {
   const [text, setText] = useState('');
+  let email = route.params.email;
+  let password = route.params.password;
 
   
   return (
@@ -22,7 +24,7 @@ export function GetName({ navigation }) {
         <Button
           mode="contained"
           style={{backgroundColor: "#D8C8FB", width: 250, height: 60, marginTop: 20, marginLeft: 25, marginRight: 25, padding: 10, borderRadius: 15, alignContent: "center" }}
-          onPress = {() => {navigation.navigate("GroupScreen", {name: text})}}
+          onPress = {() => {navigation.navigate("GroupScreen", {name: text, email: email, password: password})}}
           labelStyle = {{color: "black"}}
         >
           Next

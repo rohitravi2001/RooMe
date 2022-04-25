@@ -5,18 +5,18 @@ import {Button} from "react-native-paper";
 import {styles} from "./GroupScreen.styles";
 import { NavigationContainer } from "@react-navigation/native";
 import { getFirestore, collection, setDoc, query, where, getDocs, deleteDoc, doc, updateDoc, ref } from "firebase/firestore";
-import { getAuth, signOut } from "firebase/auth";
+import { getAuth, signOut, createUserWithEmailAndPassword } from "firebase/auth";
 
 
 
 export function GroupScreen({ navigation, route }) {
   const [text, setText] = useState('');
   let name = route.params.name;
-  const auth = getAuth();
-  const currentUserId = auth.currentUser!.uid;
+  let email = route.params.email;
+  let password = route.params.password;
+
   const db = getFirestore();
   const peopleCollection = collection(db, "people");
-  const peopleRef = doc(peopleCollection, currentUserId);
 
   const joinPressed = async () => {
     //Update data fields after join button pressed
@@ -28,13 +28,21 @@ export function GroupScreen({ navigation, route }) {
     const q =  query(groupsCollection, where("groupCode", "==", groupNumber));
     const querySnapshot = await getDocs(q);
 
- 
     if (querySnapshot.size > 0) {
         //if groupNumber exists, add currentUserId to members array
-        await updateDoc(groupRef, {members: [...querySnapshot.docs[0].data().members, currentUserId]});
-        //add currentUserId to people collection
+        const auth = getAuth();
+        createUserWithEmailAndPassword(auth, email, password)
+        .then(async () => {
+          let currentUserId = auth.currentUser!.uid;
+        let peopleRef = doc(peopleCollection, currentUserId);
         await setDoc(peopleRef, {uid: currentUserId, name: name,  groupName: querySnapshot.docs[0].data().groupName, groupCode: groupNumber});
-        navigation.navigate("CreateATaskScreen", {groupName: text, groupCode: groupNumber, name: name});
+         await updateDoc(groupRef, {members: [...querySnapshot.docs[0].data().members, currentUserId]});
+
+        console.log('User account created & signed in!');
+      })
+      .catch(error => {
+        console.log(error)
+        });
       }
       else {
         console.log("Group does not exist");
@@ -61,7 +69,7 @@ export function GroupScreen({ navigation, route }) {
         <Button
           mode="contained"
           style={{backgroundColor: "#7569BE", width: 250, height: 60, marginTop: 20, marginLeft: 25, marginRight: 25, padding: 10, borderRadius: 15, alignContent: "center" }}
-          onPress = {() => {navigation.navigate("CreateAGroupScreen", {name: name})}}
+          onPress = {() => {navigation.navigate("CreateAGroupScreen", {name: name, email: email, password: password})}}
           labelStyle = {{color: "white"}}
         >
           Create a Group

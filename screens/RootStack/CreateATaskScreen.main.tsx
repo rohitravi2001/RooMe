@@ -17,11 +17,8 @@ function generateRandomNumber() {
 
 
 
-export function CreateATaskScreen({navigation, route}) {
-  let groupName = route.params.groupName;
-  let groupCode = route.params.groupCode;
-  let name = route.params.name;
-  
+export function CreateATaskScreen({navigation}) {  
+
   const [text, setText] = useState('');
 
   const [sunSelected, setSunSelected] = useState(false);
@@ -34,9 +31,23 @@ export function CreateATaskScreen({navigation, route}) {
 
   const auth = getAuth();
   const currentUserId = auth.currentUser!.uid;
+
   const db = getFirestore();
   const peopleCollection = collection(db, "people");
   const peopleRef = doc(peopleCollection, currentUserId);
+
+  //get Name from people ref
+ 
+  useEffect(() => {
+    const fetchData = async () => {
+      let docSnapshot = await getDoc(peopleRef);
+      let name = docSnapshot.data().name;
+      let groupCode = docSnapshot.data().groupCode;
+      let groupName =  docSnapshot.data().groupName;
+      
+    }
+    fetchData().catch(console.error);
+  }, []);
 
   const DayButton = (props) => {
     return (
@@ -53,9 +64,9 @@ export function CreateATaskScreen({navigation, route}) {
   const createTaskPressed = async () => {
     const groupsCollection = collection(db, "groups");
     const groupRef = doc(groupsCollection, groupCode.toString());
-    const docSnap = await getDoc(groupRef)
+    const docSnap = await getDoc(groupRef);
     if (docSnap.exists()) {
-      await updateDoc(groupRef, {taskNames: [...docSnap.data().taskNames, text], people: []});
+      await updateDoc(groupRef, {taskNames: [...docSnap.data().taskNames, text]});
     }
     //create a tasksCollection inside of groupsCollection
     const tasksCollection = collection(db, "groups", groupCode.toString(), "tasks");
