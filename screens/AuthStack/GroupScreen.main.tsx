@@ -36,7 +36,7 @@ export function GroupScreen({ navigation, route }) {
           let currentUserId = auth.currentUser!.uid;
         let peopleRef = doc(peopleCollection, currentUserId);
         await setDoc(peopleRef, {uid: currentUserId, name: name,  groupName: querySnapshot.docs[0].data().groupName, groupCode: groupNumber});
-         await updateDoc(groupRef, {members: [...querySnapshot.docs[0].data().members, currentUserId]});
+        await updateDoc(groupRef, {members: [...querySnapshot.docs[0].data().members, currentUserId], memberNames: [...querySnapshot.docs[0].data().memberNames, name]});
 
         console.log('User account created & signed in!');
       })

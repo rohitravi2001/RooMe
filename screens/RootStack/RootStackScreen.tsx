@@ -26,16 +26,21 @@ export function RootStackScreen() {
           options={options}
           component={HomePage}
         />
-         <RootStack.Screen
+      <RootStack.Group screenOptions={{ presentation: 'modal' }}>
+      <RootStack.Screen
           name="CreateATaskScreen"
           options={options}
           component={CreateATaskScreen}
         />
+      </RootStack.Group>
+      <RootStack.Group screenOptions={{ presentation: 'modal' }}>  
         <RootStack.Screen
           name="AssignATaskScreen"
           options={options}
           component={AssignATaskScreen}
         />
+      </RootStack.Group>
+         
       </RootStack.Navigator>
     </NavigationContainer>
   );

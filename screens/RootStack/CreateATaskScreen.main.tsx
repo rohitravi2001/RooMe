@@ -17,9 +17,15 @@ function generateRandomNumber() {
 
 
 
-export function CreateATaskScreen({navigation}) {  
+export function CreateATaskScreen({navigation, route}) { 
+
+    let name = route.params.name;
+      let groupCode = route.params.groupCode;
+      let groupName =  route.params.groupName;
+      
 
   const [text, setText] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const [sunSelected, setSunSelected] = useState(false);
   const [monSelected, setMonSelected] = useState(false);
@@ -37,7 +43,7 @@ export function CreateATaskScreen({navigation}) {
   const peopleRef = doc(peopleCollection, currentUserId);
 
   //get Name from people ref
- 
+ /*
   useEffect(() => {
     const fetchData = async () => {
       let docSnapshot = await getDoc(peopleRef);
@@ -48,6 +54,7 @@ export function CreateATaskScreen({navigation}) {
     }
     fetchData().catch(console.error);
   }, []);
+  */
 
   const DayButton = (props) => {
     return (
@@ -62,6 +69,7 @@ export function CreateATaskScreen({navigation}) {
   
 
   const createTaskPressed = async () => {
+    setLoading(true);
     const groupsCollection = collection(db, "groups");
     const groupRef = doc(groupsCollection, groupCode.toString());
     const docSnap = await getDoc(groupRef);
@@ -94,6 +102,8 @@ export function CreateATaskScreen({navigation}) {
       daysSelected.push(6)
     } 
     await setDoc(taskRef, {taskName: text, daysSelected: daysSelected});
+    setLoading(false);
+    navigation.navigate("HomePage");
     
   }
 
@@ -119,9 +129,11 @@ export function CreateATaskScreen({navigation}) {
           style={{backgroundColor: "#7569BE", width: 250, height: 60, marginTop: 40, marginLeft: 25, marginRight: 25, padding: 10, borderRadius: 15, alignContent: "center" }}
           onPress = {() => {createTaskPressed()}}
           labelStyle = {{color: "white"}}
+          loading={loading}
         >
           Create Task 
         </Button>
+        {/*
         <Button
           mode="contained"
           style={{backgroundColor: "#7569BE", width: 250, height: 60, marginTop: 40, marginLeft: 25, marginRight: 25, padding: 10, borderRadius: 15, alignContent: "center" }}
@@ -130,14 +142,8 @@ export function CreateATaskScreen({navigation}) {
         >
           Assign A Task
         </Button>
-        <Button
-          mode="contained"
-          style={{backgroundColor: "#7569BE", width: 250, height: 60, marginTop: 40, marginLeft: 25, marginRight: 25, padding: 10, borderRadius: 15, alignContent: "center" }}
-          onPress = {() => {signOut(auth)}}
-          labelStyle = {{color: "white"}}
-        >
-          Sign Out
-        </Button>
+  */}
+
       </View>
     </>
   );

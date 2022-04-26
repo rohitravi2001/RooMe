@@ -23,37 +23,28 @@ export function HomePage({navigation}) {
    const [name, setName] = useState("");
    const [groupName, setGroupName] = useState("");
    const [groupCode, setGroupCode] = useState("");
-
+   const [todayData, setTodayData] = useState([]);
+   const [upcomingData, setUpcomingData] = useState([]);
    const [roomateData, setRoomateData] = useState([]);
+
 
     
 
     useEffect( () => {
-        /*
-    
-        const unsubscribe = onSnapshot((collection(db, "people")), (querySnapshot) => {
-            querySnapshot.forEach((doc: any) => {
-                const source = doc.metadata.hasPendingWrites ? "Local" : "Server";
-                console.log( source, " data: ", doc.data());
-              });
-           
-          });
-        return unsubscribe;
-        
-        */
-        //get the taskNames from the group
+       
         const fetchData = async () => {
             //setRoomateData([{name: "Rohit"}, {name:"Krishma"}]);
             try{
                 const q = query(collection(db, "people"), where("uid", "==", currentUserId));
                 const docu = await getDocs(q);
                 const docSnap = docu.docs[0];
-                console.log(docSnap);
                 setName(docSnap.data().name);
                 setGroupName(docSnap.data().groupName);
                 setGroupCode(docSnap.data().groupCode);
+                /*
                 let gc = docSnap.data().groupCode;
                 console.log(name);
+                
                 const groupRef = doc(groupsCollection, gc.toString());
                 const newDocSnap = await getDoc(groupRef);
                 let members = newDocSnap.data().members;
@@ -67,8 +58,8 @@ export function HomePage({navigation}) {
                         lst.push({name: name, uid: docSnap2.data().uid});
                     }
                 }
-                setRoomateData(lst);
-                console.log(lst);
+                */
+                
             }catch (err) {
                 console.error(err);
                 console.log("hi");
@@ -77,23 +68,112 @@ export function HomePage({navigation}) {
 
         }
         fetchData().catch(console.error);
+        
 
       
       }, []);
+
+      useEffect (() => {
+          //do only if groupCode is not empty
+          console.log(groupCode);
+
+            if (groupCode !== "") {
+                const unsub = onSnapshot(doc(db, "groups", groupCode.toString()), (doc) => {
+                let lst = [];
+                //loop through doc.data().members
+                let members = doc.data().members;
+                let memberNames = doc.data().memberNames;
+                for (let i = 0; i < members.length; i++) {
+                    if (!(members[i] === currentUserId)) {
+                        lst.push({name: memberNames[i], uid: members[i]});
+                    }
+                }
+                setRoomateData(lst);
+                console.log(lst);
+                return unsub;
+            }); 
+        }; 
+
+      }, [groupCode]);
+
+
     
 
-    const todayData = [
-        {
-            taskName: 'Dishes',
-          },
-          {
-            taskName: 'Trash',
-          },
-          {
-            taskName: 'Yard Work',
-          },
-    ];
+      function padTo2Digits(num) {
+        return num.toString().padStart(2, '0');
+      }
+      
+      function formatDate(date) {
+        return [
+          padTo2Digits(date.getDate()),
+          padTo2Digits(date.getMonth() + 1),
+          date.getFullYear(),
+        ].join('-');
+      }
+      
 
+      useEffect (() => {
+          //console.log("HELLO");
+        //do only if groupCode is not empty
+        let todayDate = formatDate(new Date());
+       
+          if (groupCode !== "") {
+              const dateCollection = collection(db, "groups", groupCode.toString(), todayDate);
+              const unsubscribe = onSnapshot(query(dateCollection), (querySnapshot) => {
+                let lst = [];
+                querySnapshot.forEach((doc: any) => {
+                    if (doc.data().personUID === currentUserId) {
+                        lst.push({taskName: doc.data().task});
+                    } 
+                  });
+                    setTodayData(lst);
+                    //console.log(lst);
+              return unsubscribe;
+          }); 
+      }; 
+
+    }, [groupCode]);
+
+
+    useEffect (() => {
+        console.log("HELLO");
+      //do only if groupCode is not empty
+    
+      if (groupCode !== "") {
+        let lst = [];
+        let currDate = new Date();
+        currDate.setDate(currDate.getDate() + 1);
+        let todayDate = formatDate(currDate);
+        let count = 0;
+        const unsub = onSnapshot(doc(db, "groups", groupCode.toString()), async (doc) => {
+            let dateCollection = collection(db, "groups", groupCode.toString(), todayDate);
+            let querySnapshot = await getDocs(dateCollection);
+            while (count < 3 && querySnapshot.docs.length > 1) {
+               // console.log(todayDate);
+                querySnapshot.forEach((doc) => {
+                    if (doc.data().personUID === currentUserId  && count < 3){
+                        lst.push({taskName: doc.data().task, date: todayDate});
+                        count++;
+                    }
+                  });
+                currDate.setDate(currDate.getDate() + 1);
+                todayDate = formatDate(currDate);
+                dateCollection = collection(db, "groups", groupCode.toString(), todayDate);
+                querySnapshot = await getDocs(dateCollection);
+                
+            };
+            setUpcomingData(lst);
+            console.log(lst);
+        }); 
+      
+        return unsub;
+        }; 
+
+  }, [groupCode]);
+    
+
+
+/*
     const upcomingData = [
         {
             taskName: 'Vaccuum',
@@ -105,6 +185,7 @@ export function HomePage({navigation}) {
             taskName: 'Groceries',
           },
     ];
+    */
 
 
     const Item = ({ task }) => (
@@ -113,10 +194,23 @@ export function HomePage({navigation}) {
             <Button icon="check-outline" mode="outlined" style={styles.headerButtons} color="#000000" >Done</Button>
         </View>
       );
+
+      const UpcomingTaskItem = ({ task, date }) => (
+        <View style={styles.task}>
+            <Text style={{fontSize: 20, fontWeight: "bold"}}>{task}</Text>
+            <Button  mode="contained" style={styles.headerButtons} color="#7569BE" >{date}</Button>
+        </View>
+      );
     
+      const renderUpcomingItem = ({ item }) => (
+        <UpcomingTaskItem task={item.taskName} date = {item.date} />
+      );
+
       const renderItem = ({ item }) => (
         <Item task={item.taskName} />
       );
+
+      
 
       const RoomateButton = ({ name }) => (
         <View style={{flexDirection: "column", justifyContent: "space-evenly"}}>
@@ -157,6 +251,22 @@ export function HomePage({navigation}) {
         )
     }
 
+    const ListEmptyComponent = () => {
+        return (
+          <View style = {{padding: 15, alignItems: "center", justifyContent: "center"}}>
+            <Text style = {{color: "grey", fontSize: 20}}>You Have No Tasks Today!</Text>
+         </View>
+          );
+        }
+
+    const SecondListEmptyComponent = () => {
+            return (
+              <View style = {{padding: 15, alignItems: "center", justifyContent: "center"}}>
+                <Text style = {{color: "grey", fontSize: 20}}>No Upcoming Tasks!</Text>
+             </View>
+              );
+    }
+
 
     const TodaysTasks = () => { 
         return (  
@@ -166,7 +276,9 @@ export function HomePage({navigation}) {
                 data={todayData}
                 renderItem={renderItem}
                 keyExtractor={item => item.taskName}
+                ListEmptyComponent={ListEmptyComponent}
                 />
+               
             </View>  
         )
     }
@@ -174,14 +286,18 @@ export function HomePage({navigation}) {
 
     const UpcomingTasks = () => {
         return (  
+            
             <View style={styles.taskBox}> 
                 <FlatList
                 style={styles.taskFlatListStyle}
                 data={upcomingData}
-                renderItem={renderItem}
+                renderItem={renderUpcomingItem}
                 keyExtractor={item => item.taskName}
+                ListEmptyComponent={SecondListEmptyComponent}
+
                 />
             </View>  
+            
         )
     }
 
@@ -280,8 +396,15 @@ export function HomePage({navigation}) {
             marginLeft: 20,
         },
       });
+      if (groupCode == ""){
+        return(
+        <View style={{flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#7569be"}}>
+            <Text style = {{color: "white", fontSize: 50, fontWeight: "bold"}}>RooMe</Text>
+        </View>);
 
+    } else {
     return (
+        
         <>
         <Header/>
         <ScrollView>
@@ -292,14 +415,14 @@ export function HomePage({navigation}) {
             <Title style={styles.titleText}>Roommates</Title>
                 <RoomateButtons/>
             <View style={styles.container}>
-                <Button icon="plus" mode="outlined" style={styles.footerButtons} color="#000000" >Create Tasks</Button>
+                <Button icon="plus" mode="outlined" style={styles.footerButtons} color="#000000" onPress = {() => {navigation.navigate('CreateATaskScreen', {name: name, groupCode: groupCode, groupName: groupName})}}  >Create Tasks</Button>
                 <Button icon="circle-edit-outline" mode="outlined" style={styles.footerButtons} color="#000000" >Edit Tasks</Button>
             </View>
-            <Button icon="clipboard-account-outline" mode="outlined" style={styles.footerButtons} color="#000000" >Assign Tasks</Button>
+            <Button icon="clipboard-account-outline" mode="outlined" style={styles.footerButtons} color="#000000" onPress = {() => {navigation.navigate('AssignATaskScreen', {name: name, groupCode: groupCode, groupName: groupName})}}>Assign Tasks</Button>
             <Button icon="calendar" mode="outlined" style={styles.footerButtons} color="#000000" >View Calendar</Button>
             
         </ScrollView>
         </>
-    );
+    ); }
 
 }   

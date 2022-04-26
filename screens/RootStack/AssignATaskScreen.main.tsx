@@ -41,7 +41,7 @@ export function AssignATaskScreen({navigation, route}) {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState("");
   const [tasks, setTasks] = useState([]);
-
+  const [loading, setLoading] = useState(false);
 
   useEffect( () => {
     //get the taskNames from the group
@@ -154,31 +154,7 @@ export function AssignATaskScreen({navigation, route}) {
     }
     return days;
   }
-  function toDay(day) {
-    switch(day) {
-      case 0:
-        return "Sunday";
-        break;
-      case 1:
-        return "Monday";
-        break;
-      case 2:
-        return "Tuesday";
-        break;
-      case 3:
-        return "Wednesday";
-        break;
-      case 4:
-        return "Thursday";
-        break;
-      case 5:
-        return "Friday";
-        break;
-      case 6:
-        return "Saturday";
-        break;
-    }
-  }
+  
   function padTo2Digits(num) {
     return num.toString().padStart(2, '0');
   }
@@ -194,6 +170,7 @@ export function AssignATaskScreen({navigation, route}) {
 
   
   const assignTaskPressed = async () => {
+    setLoading(true);
     const tasksCollection = collection(db, "groups", groupCode.toString(), "tasks");
     
 
@@ -245,13 +222,14 @@ export function AssignATaskScreen({navigation, route}) {
     
     }
     await updateDoc(taskRef, {people: taskInfo.people});
-    
+    setLoading(false);
+    navigation.navigate("HomePage");
     
   }
 
   return (
     <>
-    <ScrollView nestedScrollEnabled={true} style={{ width: "100%" }}>
+    
       <View style={styles.container}>
         <Text style={{marginTop: 90, fontWeight: "bold", fontSize: 35, textAlign:'center'}}> Assign a Task </Text>
         <Text style={{marginTop: 20, fontWeight: "bold", fontSize: 20}}> Pick a Task </Text>
@@ -294,19 +272,12 @@ export function AssignATaskScreen({navigation, route}) {
           style={{backgroundColor: "#7569BE", width: 250, height: 60,  marginLeft: 25, marginRight: 25, padding: 10, borderRadius: 15, alignContent: "center" }}
           onPress = {() => {assignTaskPressed()}} 
           labelStyle = {{color: "white"}}
+          loading = {loading}
         >
           Assign Task
         </Button>
-        <Button
-          mode="contained"
-          style={{backgroundColor: "#7569BE", width: 250, height: 60, marginTop: 40, marginLeft: 25, marginRight: 25, padding: 10, borderRadius: 15, alignContent: "center" }}
-          onPress = {() => {signOut(auth)}}
-          labelStyle = {{color: "white"}}
-        >
-          Sign Out
-        </Button>
+      
       </View>
-      </ScrollView>
     </>
   );
 
