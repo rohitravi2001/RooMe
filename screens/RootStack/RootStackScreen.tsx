@@ -4,14 +4,17 @@ import { NavigationContainer } from "@react-navigation/native";
 import { CreateATaskScreen } from "./CreateATaskScreen.main";
 import { AssignATaskScreen } from "./AssignATaskScreen.main";
 import { HomePage } from "./HomePage";
+import { RoomateStatus } from "./RoomateStatus";
+import {CalendarScreen} from "./CalendarScreen";
+import {CodeScreen} from "./CodeScreen";
 
 export type RootStackParamList = {
+  CalendarScreen: undefined;
+  CodeScreen:undefined;
 AssignATaskScreen: undefined;
   HomePage: undefined
   CreateATaskScreen: undefined;
-  GetName: undefined; 
-  CreateAGroupScreen: undefined;
-  GroupScreen: undefined;
+  RoomateStatus: undefined;
 };
 
 const RootStack = createStackNavigator<RootStackParamList>();
@@ -25,6 +28,21 @@ export function RootStackScreen() {
           name="HomePage"
           options={options}
           component={HomePage}
+        />
+        <RootStack.Screen
+          name="RoomateStatus"
+          options={options}
+          component={RoomateStatus}
+        />
+        <RootStack.Screen
+          name="CodeScreen"
+          options={options}
+          component={CodeScreen}
+        />
+        <RootStack.Screen
+          name="CalendarScreen"
+          options={options}
+          component={CalendarScreen}
         />
       <RootStack.Group screenOptions={{ presentation: 'modal' }}>
       <RootStack.Screen

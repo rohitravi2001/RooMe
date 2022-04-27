@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, FlatList, Text, StyleSheet, SafeAreaView } from "react-native";
+import { View, FlatList, Text, StyleSheet, SafeAreaView, TouchableOpacity } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { Provider, Portal, Appbar, Card, Button, Paragraph, Title, Modal, RadioButton } from "react-native-paper";
@@ -21,6 +21,7 @@ export function HomePage({navigation}) {
     const groupsCollection = collection(db, "groups");
 
    const [name, setName] = useState("");
+    const[isRendering, setIsRendering] = useState(true);
    const [groupName, setGroupName] = useState("");
    const [groupCode, setGroupCode] = useState("");
    const [todayData, setTodayData] = useState([]);
@@ -29,11 +30,10 @@ export function HomePage({navigation}) {
 
 
     
-
+    //set the group name and code
     useEffect( () => {
        
         const fetchData = async () => {
-            //setRoomateData([{name: "Rohit"}, {name:"Krishma"}]);
             try{
                 const q = query(collection(db, "people"), where("uid", "==", currentUserId));
                 const docu = await getDocs(q);
@@ -41,24 +41,6 @@ export function HomePage({navigation}) {
                 setName(docSnap.data().name);
                 setGroupName(docSnap.data().groupName);
                 setGroupCode(docSnap.data().groupCode);
-                /*
-                let gc = docSnap.data().groupCode;
-                console.log(name);
-                
-                const groupRef = doc(groupsCollection, gc.toString());
-                const newDocSnap = await getDoc(groupRef);
-                let members = newDocSnap.data().members;
-                //loop through everything in the members
-                let lst = [];
-                for (let i = 0; i < members.length; i++) {
-                    const newPeopleRef = doc(peopleCollection, members[i]);
-                    let docSnap2 = await getDoc(newPeopleRef);
-                    let name = docSnap2.data().name;
-                    if (!(members[i] === currentUserId)) {
-                        lst.push({name: name, uid: docSnap2.data().uid});
-                    }
-                }
-                */
                 
             }catch (err) {
                 console.error(err);
@@ -73,6 +55,7 @@ export function HomePage({navigation}) {
       
       }, []);
 
+      //set the roomate data
       useEffect (() => {
           //do only if groupCode is not empty
           console.log(groupCode);
@@ -111,9 +94,9 @@ export function HomePage({navigation}) {
         ].join('-');
       }
       
-
+      //set the today data
       useEffect (() => {
-          //console.log("HELLO");
+          console.log("HELLO");
         //do only if groupCode is not empty
         let todayDate = formatDate(new Date());
        
@@ -123,18 +106,19 @@ export function HomePage({navigation}) {
                 let lst = [];
                 querySnapshot.forEach((doc: any) => {
                     if (doc.data().personUID === currentUserId) {
-                        lst.push({taskName: doc.data().task});
+                        lst.push({taskName: doc.data().task, completed: doc.data().completed, date: todayDate});
                     } 
                   });
                     setTodayData(lst);
                     //console.log(lst);
-              return unsubscribe;
+              
           }); 
+          return unsubscribe;
       }; 
 
     }, [groupCode]);
 
-
+    //set the upcoming data
     useEffect (() => {
         console.log("HELLO");
       //do only if groupCode is not empty
@@ -164,6 +148,7 @@ export function HomePage({navigation}) {
             };
             setUpcomingData(lst);
             console.log(lst);
+            setIsRendering(false);
         }); 
       
         return unsub;
@@ -187,13 +172,24 @@ export function HomePage({navigation}) {
     ];
     */
 
+    const toggleCompleted =  async (task) => {
+        console.log(task.date);
+        console.log(task.taskName);
+        let docRef = doc(db, "groups", groupCode.toString(), task.date, task.taskName);
 
-    const Item = ({ task }) => (
+        await updateDoc(docRef , { completed: !task.completed });
+    
+    
+      };
+    
+    const Item = ({item}) => {
+        console.log(item);
+        return(
         <View style={styles.task}>
-            <Text style={{fontSize: 20, fontWeight: "bold"}}>{task}</Text>
-            <Button icon="check-outline" mode="outlined" style={styles.headerButtons} color="#000000" >Done</Button>
-        </View>
-      );
+            <Text style={{fontSize: 20, fontWeight: "bold"}}>{item.taskName}</Text>
+            <Button onPress={ () => toggleCompleted(item)} icon={item.completed ? "check-outline" : ""}> {item.completed ? "DONE" : "Incomplete"} </Button>
+        </View>);
+    };
 
       const UpcomingTaskItem = ({ task, date }) => (
         <View style={styles.task}>
@@ -206,28 +202,31 @@ export function HomePage({navigation}) {
         <UpcomingTaskItem task={item.taskName} date = {item.date} />
       );
 
-      const renderItem = ({ item }) => (
-        <Item task={item.taskName} />
-      );
+      const renderItem = ( {item} ) => {
+        //console.log(item);
+          return(
+            <Item item= {item} />);
+          };
 
       
 
-      const RoomateButton = ({ name }) => (
-        <View style={{flexDirection: "column", justifyContent: "space-evenly"}}>
-            <Button mode="contained" style={styles.roomateButtons}>
-                {name.charAt(0)}
-            </Button>
-            <Text style={{marginLeft: 35}}>
-                {name}
-            </Text>    
-        </View>
-        
-        
+      const RoomateButton = ({ name, uid}) => (
+
+        <View style={{flexDirection: "column", justifyContent: "space-evenly", padding: 10}}>
+        <TouchableOpacity onPress = {() => {navigation.navigate('RoomateStatus', {name: name, uid: uid, groupCode: groupCode, groupName: groupName})}}  style={{  width: 75,height: 75, justifyContent: 'center',alignItems: 'center',padding: 10,borderRadius: 35,backgroundColor:"#7569BE"}}>
+            <Text  style = {{fontWeight: "bold",alignItems: "center", fontSize: 30, color: "white"}}>{name.charAt(0)}</Text>
+    </TouchableOpacity>
+        <Text style={{marginLeft: 16}}>
+            {name}
+        </Text>    
+    </View>
+
+       
         
       );
 
       const roomateRenderItem = ({ item }) => (
-        <RoomateButton name={item.name}/>
+        <RoomateButton name={item.name} uid = {item.uid}/>
       );
 
     // given name of task, loop through data, find task, and 
@@ -246,7 +245,7 @@ export function HomePage({navigation}) {
             <Appbar.Header style={styles.header}>
                 <Button icon="account-arrow-left-outline" mode="outlined" style={styles.headerButtons} color="#ffffff" onPress = {() => {signOut(auth)}} >Sign Out</Button>
                 <Appbar.Content title={groupName}/>
-                <Button icon="lock-outline" mode="outlined" style={styles.headerButtons} color="#ffffff" >Code</Button>
+                <Button icon="lock-outline" mode="outlined" style={styles.headerButtons} color="#ffffff" onPress = {() => {navigation.navigate('CodeScreen', {groupCode: groupCode})}}>Code</Button>
             </Appbar.Header>
         )
     }
@@ -396,7 +395,7 @@ export function HomePage({navigation}) {
             marginLeft: 20,
         },
       });
-      if (groupCode == ""){
+      if (groupCode == "" || isRendering){
         return(
         <View style={{flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#7569be"}}>
             <Text style = {{color: "white", fontSize: 50, fontWeight: "bold"}}>RooMe</Text>
@@ -419,7 +418,7 @@ export function HomePage({navigation}) {
                 <Button icon="circle-edit-outline" mode="outlined" style={styles.footerButtons} color="#000000" >Edit Tasks</Button>
             </View>
             <Button icon="clipboard-account-outline" mode="outlined" style={styles.footerButtons} color="#000000" onPress = {() => {navigation.navigate('AssignATaskScreen', {name: name, groupCode: groupCode, groupName: groupName})}}>Assign Tasks</Button>
-            <Button icon="calendar" mode="outlined" style={styles.footerButtons} color="#000000" >View Calendar</Button>
+            <Button icon="calendar" mode="outlined" style={styles.footerButtons} color="#000000" onPress = {() => {navigation.navigate('CalendarScreen', {groupCode: groupCode})}}>View Calendar</Button>
             
         </ScrollView>
         </>

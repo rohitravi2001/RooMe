@@ -42,10 +42,13 @@ export function AssignATaskScreen({navigation, route}) {
   const [value, setValue] = useState("");
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [isRendering, setIsRendering] = useState(true);
+
 
   useEffect( () => {
     //get the taskNames from the group
     const fetchData = async () => {
+     
       const docSnap = await getDoc(groupRef);
       if (docSnap.exists()) {
         let lst = [];
@@ -77,8 +80,8 @@ export function AssignATaskScreen({navigation, route}) {
     }
     
     fetchData().catch(console.error);
-    console.log(tasks)
-  
+    console.log(tasks);
+    setIsRendering(false);
   }, []);
 
 
@@ -226,6 +229,13 @@ export function AssignATaskScreen({navigation, route}) {
     navigation.navigate("HomePage");
     
   }
+  if (isRendering){
+    return(
+    <View style={{flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#7569be"}}>
+        <Text style = {{color: "white", fontSize: 50, fontWeight: "bold"}}>RooMe</Text>
+    </View>);
+
+} else {
 
   return (
     <>
@@ -280,6 +290,6 @@ export function AssignATaskScreen({navigation, route}) {
       </View>
     </>
   );
-
+          }
 }
 

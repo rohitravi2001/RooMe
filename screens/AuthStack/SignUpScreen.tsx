@@ -1,11 +1,13 @@
+import { createStackNavigator } from "@react-navigation/stack"; 
 import { StackNavigationProp } from "@react-navigation/stack";
 import React, { useState } from "react";
-import { Text, SafeAreaView, StyleSheet, ScrollView } from "react-native";
-import { Appbar, TextInput, Snackbar, Button } from "react-native-paper";
+import { View, Text, StyleSheet, TextInput, TouchableOpacity } from "react-native";
+import { Snackbar, Button } from "react-native-paper";
 import { AuthStackParamList } from "./AuthStackScreen";
 import { User, getAuth, onAuthStateChanged, createUserWithEmailAndPassword } from "firebase/auth";
 import firebase from "firebase/app";
 import "firebase/firestore";
+import {styles} from "./SignInScreen.styles";
 
 interface Props {
   navigation: StackNavigationProp<AuthStackParamList, "SignUpScreen">;
@@ -48,51 +50,43 @@ export default function SignUpScreen({ navigation }: Props) {
     }
     
     
-      return (
-        <>
-       <Bar />
-    
-          <SafeAreaView style={styles.container}>
+    return (
+      <>  
+        <View style={styles.container}>
+        <Text style={{marginTop: 120, fontWeight: "bold", fontSize: 25, textAlign:'center'}}> Welcome to RooMe! </Text>
+        <Text style={{marginTop: 45, fontWeight: "bold", fontSize: 18, textAlign:'center'}}> Create an account </Text>
+        <TextInput
+            placeholder = "Enter Email"
+            value={email}
+            onChangeText={(name) => setEmail(name)}
+            style={styles.input}
+          />
           <TextInput
-              label="Email"
-              value={email}
-              onChangeText={(name) => setEmail(name)}
-              style={{ backgroundColor: "white", marginTop: 30, marginBottom: 20, marginLeft: 25, marginRight: 25}}
-              autoComplete={false}
-            />
-            <TextInput
-              label="Password"
-              secureTextEntry={true}
-              value={password}
-              onChangeText={(location) => setPassword(location)}
-              style={{ backgroundColor: "white", marginBottom: 30, marginLeft: 25, marginRight: 25 }}
-              autoComplete={false}
-            />
-            <Button
-              mode="contained"
-              style={{ marginTop: 10, marginLeft: 25, marginRight: 25, padding: 7 }}
-              onPress={createUser}
-              loading={loading}
-            >
-              CREATE AN ACCOUNT
-            </Button>
-            <Button
-              mode="text"
-              style={{ marginTop: 20, marginLeft: 25, marginRight: 25, padding: 7 }}
-              onPress = {() => navigation.navigate("SignInScreen")}
-            >
-              OR, SIGN IN INSTEAD
-            </Button>
-            <Snackbar style = {{marginBottom: 20}} visible={visible} onDismiss={onDismissSnackBar}>{snackBarText} </Snackbar>
-          </SafeAreaView>
-        </>
-      );
-    }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 32,
-    backgroundColor: "#ffffff",
-  },
-});
+            placeholder = "Enter Password"
+            secureTextEntry={true}
+            value={password}
+            onChangeText={(location) => setPassword(location)}
+            style={styles.input}
+          />
+          <Button
+            mode="contained"
+            style={{backgroundColor: "#D8C8FB", width: 230, height: 60, marginTop: 40, marginLeft: 30, marginRight: 25, padding: 10, borderRadius: 15, alignContent: "center" }}
+            labelStyle = {{color: "black"}}
+            onPress={createUser}
+            loading={loading}
+          >
+            Sign-up
+          </Button>
+          <Button
+            mode="text"
+            style={{ marginTop: 20, marginLeft: 25, marginRight: 25, padding: 7 }}
+            onPress = {() => navigation.navigate("SignInScreen")}
+            labelStyle = {{color: "#7569BE"}}
+          >
+            OR, SIGN IN INSTEAD
+          </Button>
+          <Snackbar style = {{marginBottom: 20}} visible={visible} onDismiss={onDismissSnackBar}>{snackBarText} </Snackbar>
+        </View>
+      </>
+    );
+  }
