@@ -14,7 +14,7 @@ interface Props {
   navigation: StackNavigationProp<AuthStackParamList, "SignInScreen">;
 }
 
-export default function SignInScreen({ navigation }: Props) {
+export default function SignInScreen({ navigation }) {
   /* Screen Requirements:
       - AppBar
       - Email & Password Text Input
@@ -174,7 +174,7 @@ export default function SignInScreen({ navigation }: Props) {
           mode="contained"
           style={{backgroundColor: "#7569BE", width: 230, height: 60, marginTop: 30, marginLeft: 25, marginRight: 25, padding: 10, borderRadius: 15, alignContent: "center" }}
           labelStyle = {{color: "white"}}
-          onPress={() => navigation.navigate("SignUpScreen")}
+          onPress={() => navigation.navigate("SignUpScreen", {token: expoPushToken})}
         > 
           Create an account
         </Button>

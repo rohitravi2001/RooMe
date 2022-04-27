@@ -22,6 +22,7 @@ export function CreateAGroupScreen({navigation, route}) {
   let name = route.params.name;
   let email = route.params.email;
   let password = route.params.password;
+  let token = route.params.token;
 
   console.log(email);
   console.log(password);
@@ -42,7 +43,7 @@ export function CreateAGroupScreen({navigation, route}) {
     console.log('User account created & signed in!');
     const currentUserId = auth.currentUser!.uid;
     const peopleRef = doc(peopleCollection, currentUserId);
-    await setDoc(peopleRef, {uid: currentUserId, name: name, groupName: text, groupCode: groupNumber});
+    await setDoc(peopleRef, {uid: currentUserId, name: name, groupName: text, groupCode: groupNumber, token: token});
     await setDoc(groupRef, {groupName: text, groupCode: groupNumber, members: [currentUserId], memberNames: [name], taskNames: [], dataChanged: 0});
   }) .catch(error => {
     console.log(error)

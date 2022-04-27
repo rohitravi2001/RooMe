@@ -14,6 +14,7 @@ export function GroupScreen({ navigation, route }) {
   let name = route.params.name;
   let email = route.params.email;
   let password = route.params.password;
+  let token = route.params.token;
 
   const db = getFirestore();
   const peopleCollection = collection(db, "people");
@@ -35,7 +36,7 @@ export function GroupScreen({ navigation, route }) {
         .then(async () => {
           let currentUserId = auth.currentUser!.uid;
         let peopleRef = doc(peopleCollection, currentUserId);
-        await setDoc(peopleRef, {uid: currentUserId, name: name,  groupName: querySnapshot.docs[0].data().groupName, groupCode: groupNumber});
+        await setDoc(peopleRef, {uid: currentUserId, name: name,  groupName: querySnapshot.docs[0].data().groupName, groupCode: groupNumber, token: token});
         await updateDoc(groupRef, {members: [...querySnapshot.docs[0].data().members, currentUserId], memberNames: [...querySnapshot.docs[0].data().memberNames, name]});
 
         console.log('User account created & signed in!');
@@ -69,7 +70,7 @@ export function GroupScreen({ navigation, route }) {
         <Button
           mode="contained"
           style={{backgroundColor: "#7569BE", width: 250, height: 60, marginTop: 20, marginLeft: 25, marginRight: 25, padding: 10, borderRadius: 15, alignContent: "center" }}
-          onPress = {() => {navigation.navigate("CreateAGroupScreen", {name: name, email: email, password: password})}}
+          onPress = {() => {navigation.navigate("CreateAGroupScreen", {name: name, email: email, password: password, token: token})}}
           labelStyle = {{color: "white"}}
         >
           Create a Group

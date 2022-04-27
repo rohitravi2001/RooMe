@@ -13,7 +13,7 @@ export function GetName({ navigation, route }) {
   const [text, setText] = useState('');
   let email = route.params.email;
   let password = route.params.password;
-
+  let token = route.params.token;
   
   return (
     <>
@@ -24,7 +24,7 @@ export function GetName({ navigation, route }) {
         <Button
           mode="contained"
           style={{backgroundColor: "#D8C8FB", width: 250, height: 60, marginTop: 20, marginLeft: 25, marginRight: 25, padding: 10, borderRadius: 15, alignContent: "center" }}
-          onPress = {() => {navigation.navigate("GroupScreen", {name: text, email: email, password: password})}}
+          onPress = {() => {navigation.navigate("GroupScreen", {name: text, email: email, password: password, token: token})}}
           labelStyle = {{color: "black"}}
         >
           Next

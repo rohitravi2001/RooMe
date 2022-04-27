@@ -13,7 +13,7 @@ interface Props {
   navigation: StackNavigationProp<AuthStackParamList, "SignUpScreen">;
 }
 
-export default function SignUpScreen({ navigation }: Props) {
+export default function SignUpScreen({ navigation, route}) {
   /* Screen Requirements:
       - AppBar
       - Email & Password Text Input
@@ -27,6 +27,8 @@ export default function SignUpScreen({ navigation }: Props) {
     All authentication logic can be found at:
       https://firebase.google.com/docs/auth/web/start
   */
+      let token = route.params.token;
+      console.log(token);
       const [loading, setLoading] = useState(false);
       const [email, setEmail] = useState("");
       const [password, setPassword] = useState("");
@@ -44,7 +46,7 @@ export default function SignUpScreen({ navigation }: Props) {
     const createUser = () => {
       console.log(email);
       console.log(password);
-      navigation.navigate("GetName", { email: email, password: password });
+      navigation.navigate("GetName", { email: email, password: password, token: token });
       //setLoading(true);
 
     }
