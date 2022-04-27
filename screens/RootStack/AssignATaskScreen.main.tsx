@@ -227,10 +227,10 @@ export function AssignATaskScreen({navigation, route}) {
     
     }
     await updateDoc(taskRef, {people: taskInfo.people});
-    let doc = await getDoc(groupRef)
-    let dataChanged = doc.data().dataChanged;
-    dataChanged = dataChanged + 1;
-    await updateDoc(groupRef, {dataChanged: dataChanged})
+    let docSnap = await getDoc(groupRef)
+    let dataChange = docSnap.data().dataChanged;
+    dataChange = dataChange + 1;
+    await updateDoc(groupRef, {dataChanged: dataChange})
     setLoading(false);
    
     

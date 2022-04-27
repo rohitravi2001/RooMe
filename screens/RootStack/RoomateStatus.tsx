@@ -162,7 +162,7 @@ export  function RoomateStatus({navigation, route}) {
                 style={styles.taskFlatListStyle}
                 data={todayData}
                 renderItem={renderItem}
-                keyExtractor={item => item.taskName}
+                keyExtractor={item => item.date + item.taskName}
                 ListEmptyComponent={ListEmptyComponent}
                 />
             </View>  
@@ -177,7 +177,7 @@ export  function RoomateStatus({navigation, route}) {
                 style={styles.taskFlatListStyle}
                 data={upcomingData}
                 renderItem={renderUpcomingItem}
-                keyExtractor={item => item.taskName}
+                keyExtractor={item => item.date + item.taskName}
                 ListEmptyComponent = {SecondListEmptyComponent}
                 />
             </View>  

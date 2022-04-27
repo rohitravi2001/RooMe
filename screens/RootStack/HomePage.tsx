@@ -124,12 +124,15 @@ export function HomePage({navigation}) {
       //do only if groupCode is not empty
     
       if (groupCode !== "") {
-        let lst = [];
-        let currDate = new Date();
-        currDate.setDate(currDate.getDate() + 1);
-        let todayDate = formatDate(currDate);
-        let count = 0;
+
+
         const unsub = onSnapshot(doc(db, "groups", groupCode.toString()), async (doc) => {
+            console.log("CHANGE DETECED");
+            let lst = [];
+            let currDate = new Date();
+            currDate.setDate(currDate.getDate() + 1);
+            let todayDate = formatDate(currDate);
+            let count = 0;
             let dateCollection = collection(db, "groups", groupCode.toString(), todayDate);
             let querySnapshot = await getDocs(dateCollection);
             while (count < 3 && querySnapshot.docs.length > 0) {
@@ -274,7 +277,7 @@ export function HomePage({navigation}) {
                 style={styles.taskFlatListStyle}
                 data={todayData}
                 renderItem={renderItem}
-                keyExtractor={item => item.taskName}
+                keyExtractor={item => item.date + item.taskName}
                 ListEmptyComponent={ListEmptyComponent}
                 />
                
@@ -291,7 +294,7 @@ export function HomePage({navigation}) {
                 style={styles.taskFlatListStyle}
                 data={upcomingData}
                 renderItem={renderUpcomingItem}
-                keyExtractor={item => item.taskName}
+                keyExtractor={item => item.date + item.taskName}
                 ListEmptyComponent={SecondListEmptyComponent}
 
                 />
