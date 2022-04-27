@@ -150,10 +150,12 @@ export function AssignATaskScreen({navigation, route}) {
 
   function getDaysInMonth(date) {
     var days = [];
-    let month = date.getMonth();
-    while (date.getMonth() === month) {
+    let month = date.getMonth() + 1;
+    let count = 0;
+    while (count <= 10) {
       days.push(new Date(date));
       date.setDate(date.getDate() + 1);
+      count ++
     }
     return days;
   }
@@ -197,7 +199,7 @@ export function AssignATaskScreen({navigation, route}) {
        //update the ppl to the database
     }
     console.log(taskInfo);
-    
+    navigation.navigate("HomePage");
     let days = getDaysInMonth(new Date());
     for(let i = 0; i < days.length; i++){
       let date = formatDate(days[i]);
@@ -225,8 +227,12 @@ export function AssignATaskScreen({navigation, route}) {
     
     }
     await updateDoc(taskRef, {people: taskInfo.people});
+    let doc = await getDoc(groupRef)
+    let dataChanged = doc.data().dataChanged;
+    dataChanged = dataChanged + 1;
+    await updateDoc(groupRef, {dataChanged: dataChanged})
     setLoading(false);
-    navigation.navigate("HomePage");
+   
     
   }
   if (isRendering){
@@ -292,4 +298,3 @@ export function AssignATaskScreen({navigation, route}) {
   );
           }
 }
-

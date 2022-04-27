@@ -43,7 +43,7 @@ export function CreateAGroupScreen({navigation, route}) {
     const currentUserId = auth.currentUser!.uid;
     const peopleRef = doc(peopleCollection, currentUserId);
     await setDoc(peopleRef, {uid: currentUserId, name: name, groupName: text, groupCode: groupNumber});
-    await setDoc(groupRef, {groupName: text, groupCode: groupNumber, members: [currentUserId], memberNames: [name], taskNames: []});
+    await setDoc(groupRef, {groupName: text, dataChanged: 0, groupCode: groupNumber, members: [currentUserId], memberNames: [name], taskNames: []});
   }) .catch(error => {
     console.log(error)
     });

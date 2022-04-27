@@ -47,7 +47,7 @@ export  function CalendarScreen({navigation, route}) {
             let dateCollection = collection(db, "groups", groupCode.toString(), todayDate);
             let querySnapshot = await getDocs(dateCollection);
             var dateObj ={date: todayDate, tasks: []};
-            while (querySnapshot.docs.length > 1) {
+            while (querySnapshot.docs.length > 0) {
 
                 querySnapshot.forEach((doc) => {
                     if (typeof doc.data().task !== 'undefined') {

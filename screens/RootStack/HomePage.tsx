@@ -132,7 +132,7 @@ export function HomePage({navigation}) {
         const unsub = onSnapshot(doc(db, "groups", groupCode.toString()), async (doc) => {
             let dateCollection = collection(db, "groups", groupCode.toString(), todayDate);
             let querySnapshot = await getDocs(dateCollection);
-            while (count < 3 && querySnapshot.docs.length > 1) {
+            while (count < 3 && querySnapshot.docs.length > 0) {
                // console.log(todayDate);
                 querySnapshot.forEach((doc) => {
                     if (doc.data().personUID === currentUserId  && count < 3){
