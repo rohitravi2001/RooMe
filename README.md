@@ -1,4 +1,5 @@
 # RooMe
+![screenshots](roome-picture.PNG)
 ### Project Description
 RooMe is a mobile app designed to help a set of roomates delegate chores and hold each accountable.
 ### Features
