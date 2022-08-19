@@ -11,6 +11,6 @@ https://www.canva.com/design/DAFJikZabzM/-YP_VF3o5fb7EIeukWlKNg/view?utm_content
 
 ### Tech Stack
  * Frontend
-  * React Native (+ Typescript)
+   * React Native (+ Typescript)
  * Backend
-  * Firebase
+   * Firebase
